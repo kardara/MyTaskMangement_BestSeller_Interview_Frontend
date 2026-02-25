@@ -1,3 +1,10 @@
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes";
+
 export default function App() {
-  return <div>Task Management App</div>;
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
 }
