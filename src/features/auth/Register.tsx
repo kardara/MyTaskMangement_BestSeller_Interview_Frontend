@@ -1,11 +1,39 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../api/auth";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 
 const Register: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  interface RegisterError {
+    message: string;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      const msg = await register({ name, email, password });
+      setSuccess(msg || "Registration successful!");
+      setTimeout(() => navigate("/login"), 1500);
+    } catch (err) {
+      const errorObj = err as RegisterError;
+      setError(errorObj.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full m-20 shadow-2xl p-4 border border-yellow-50 rounded-2xl max-w-sm">
@@ -18,7 +46,17 @@ const Register: React.FC = () => {
         </p>
       </div>
 
-      <form className="space-y-5" aria-label="Register form">
+      <form
+        className="space-y-5"
+        aria-label="Register form"
+        onSubmit={handleSubmit}
+      >
+        {error && (
+          <div className="text-red-600 text-sm text-center">{error}</div>
+        )}
+        {success && (
+          <div className="text-green-600 text-sm text-center">{success}</div>
+        )}
         <div>
           <label
             htmlFor="register-name"
@@ -26,7 +64,7 @@ const Register: React.FC = () => {
           >
             Name
           </label>
-          <input
+          <Input
             id="register-name"
             type="text"
             value={name}
@@ -44,7 +82,7 @@ const Register: React.FC = () => {
           >
             Email
           </label>
-          <input
+          <Input
             id="register-email"
             type="email"
             value={email}
@@ -63,7 +101,7 @@ const Register: React.FC = () => {
             Password
           </label>
           <div className="relative">
-            <input
+            <Input
               id="register-password"
               type={showPassword ? "text" : "password"}
               value={password}
@@ -83,13 +121,14 @@ const Register: React.FC = () => {
           </div>
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="focus-ring w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-slate-900"
+          className="focus-ring w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-slate-900 disabled:opacity-60"
           aria-label="Register"
+          disabled={loading}
         >
-          Sign Up
-        </button>
+          {loading ? "Signing Up..." : "Sign Up"}
+        </Button>
 
         <p className="pt-1 text-center text-sm text-slate-600">
           Already have an account?{" "}

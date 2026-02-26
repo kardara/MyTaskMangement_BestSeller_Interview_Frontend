@@ -1,10 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../api/auth";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  interface LoginError {
+    message: string;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await login({ email, password });
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res.user));
+      // Route based on user role
+      if (res.user.role === "ADMIN") {
+        navigate("/adminDashboard");
+      } else {
+        navigate("/userDashboard");
+      }
+    } catch (err) {
+      const errorObj = err as LoginError;
+      setError(errorObj.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full m-20 shadow-2xl p-4 border border-yellow-50 rounded-2xl max-w-sm">
@@ -17,7 +49,14 @@ const Login: React.FC = () => {
         </p>
       </div>
 
-      <form className="space-y-5" aria-label="Login form">
+      <form
+        className="space-y-5"
+        aria-label="Login form"
+        onSubmit={handleSubmit}
+      >
+        {error && (
+          <div className="text-red-600 text-sm text-center">{error}</div>
+        )}
         <div>
           <label
             htmlFor="login-email"
@@ -25,7 +64,7 @@ const Login: React.FC = () => {
           >
             Email
           </label>
-          <input
+          <Input
             id="login-email"
             type="email"
             value={email}
@@ -44,7 +83,7 @@ const Login: React.FC = () => {
             Password
           </label>
           <div className="relative">
-            <input
+            <Input
               id="login-password"
               type={showPassword ? "text" : "password"}
               value={password}
@@ -73,13 +112,14 @@ const Login: React.FC = () => {
             Forgot Password
           </a>
         </div>
-        <button
+        <Button
           type="submit"
-          className="focus-ring w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-slate-900"
+          className="focus-ring w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-slate-900 disabled:opacity-60"
           aria-label="Login"
+          disabled={loading}
         >
-          Sign In
-        </button>
+          {loading ? "Signing In..." : "Sign In"}
+        </Button>
 
         <p className="pt-1 text-center text-sm text-slate-600">
           Don&apos;t have an account?{" "}
