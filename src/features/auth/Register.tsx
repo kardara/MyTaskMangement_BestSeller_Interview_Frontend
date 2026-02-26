@@ -1,38 +1,27 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../../api/auth";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { useToggle } from "../../hooks/useToggle";
+import { useAsyncAction } from "../../hooks/useAsyncAction";
 
 const Register: React.FC = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, toggleShowPassword] = useToggle();
+  const { loading, error, success, setSuccess, run } = useAsyncAction();
+  const { register } = useAuth();
   const navigate = useNavigate();
-
-  interface RegisterError {
-    message: string;
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    try {
+    await run(async () => {
       const msg = await register({ name, email, password });
       setSuccess(msg || "Registration successful!");
       setTimeout(() => navigate("/login"), 1500);
-    } catch (err) {
-      const errorObj = err as RegisterError;
-      setError(errorObj.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -112,7 +101,7 @@ const Register: React.FC = () => {
             />
             <button
               type="button"
-              onClick={() => setShowPassword((value) => !value)}
+              onClick={toggleShowPassword}
               className="focus-ring absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 hover:bg-white"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >

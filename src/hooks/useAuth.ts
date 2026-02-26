@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { login as apiLogin, register as apiRegister } from "../api/auth";
 import {
   LoginRequest,
@@ -6,35 +5,30 @@ import {
   AuthResponse,
   UserResponse,
 } from "../types/auth";
+import { useLocalStorage } from "./useLocalStorage";
 
 export function useAuth() {
-  const [user, setUser] = useState<UserResponse | null>(() => {
-    const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
-  });
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem("token"),
-  );
+  const [user, setUser] = useLocalStorage<UserResponse>("user");
+  const [token, setToken] = useLocalStorage<string>("token");
 
-  const login = async (data: LoginRequest) => {
-    const res: AuthResponse = await apiLogin(data);
+  const login = async (data: LoginRequest): Promise<AuthResponse> => {
+    const res = await apiLogin(data);
     setUser(res.user);
     setToken(res.token);
-    localStorage.setItem("user", JSON.stringify(res.user));
-    localStorage.setItem("token", res.token);
     return res;
   };
 
-  const register = async (data: RegisterRequest) => {
+  const register = async (data: RegisterRequest): Promise<string> => {
     return apiRegister(data);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
   };
 
-  return { user, token, login, register, logout };
+  const isAuthenticated = !!token;
+  const isAdmin = user?.role === "ADMIN";
+
+  return { user, token, isAuthenticated, isAdmin, login, register, logout };
 }

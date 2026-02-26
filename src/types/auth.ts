@@ -21,3 +21,9 @@ export interface AuthResponse {
   token: string;
   user: UserResponse;
 }
+
+export interface BackendError {
+  message?: string;
+  error?: string;
+  details?: Record<string, string>;
+}
