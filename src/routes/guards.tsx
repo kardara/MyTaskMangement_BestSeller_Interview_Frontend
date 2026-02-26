@@ -1,5 +1,11 @@
-// ... Route guard placeholder ...
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
 export function PrivateRoute({ children }: { children: React.ReactNode }) {
-  // Implement auth guard logic
+  const { token } = useAuth();
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
   return <>{children}</>;
 }
