@@ -90,13 +90,12 @@ const Login: React.FC = () => {
         </div>
 
         <div className="flex justify-end gap-3 text-sm">
-          <a
-            href="#"
-            onClick={(event) => event.preventDefault()}
+          <Link
+            to="/forgot-password"
             className="focus-ring rounded text-slate-700 hover:text-slate-900 hover:underline"
           >
             Forgot Password
-          </a>
+          </Link>
         </div>
         <Button
           type="submit"

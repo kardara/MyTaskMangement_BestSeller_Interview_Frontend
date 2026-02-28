@@ -1,4 +1,6 @@
-// ... ResetPassword page placeholder ...
+import { Navigate } from "react-router-dom";
+
+// Reset password is handled as part of the ForgotPassword multi-step flow.
 export default function ResetPassword() {
-  return <div>Reset Password Page</div>;
+  return <Navigate to="/forgot-password" replace />;
 }

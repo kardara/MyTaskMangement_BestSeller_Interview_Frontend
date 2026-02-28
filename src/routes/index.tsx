@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
+import ForgotPassword from "../features/auth/ForgotPassword";
+import ResetPassword from "../features/auth/ResetPassword";
 import AdminBoard from "../features/dashboard/AdminBoard";
 import UserBoard from "../features/dashboard/UserBoard";
 import { PrivateRoute } from "./guards";
@@ -10,8 +12,24 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/adminDashboard" element={<PrivateRoute><AdminBoard /></PrivateRoute>} />
-      <Route path="/userDashboard" element={<PrivateRoute><UserBoard /></PrivateRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route
+        path="/adminDashboard"
+        element={
+          <PrivateRoute>
+            <AdminBoard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/userDashboard"
+        element={
+          <PrivateRoute>
+            <UserBoard />
+          </PrivateRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
