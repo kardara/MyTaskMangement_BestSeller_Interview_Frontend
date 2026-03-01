@@ -1,7 +1,7 @@
 import React from "react";
-import { useForgotPassword } from "../../hooks/useForgotPassword";
-import SendOtpStep from "./forgotPassword/SendOtpStep";
-import VerifyAndResetStep from "./forgotPassword/VerifyAndResetStep";
+import { useForgotPassword } from "../../../hooks/useForgotPassword";
+import SendOtpStep from "./SendOtpStep";
+import VerifyAndResetStep from "./VerifyAndResetStep";
 
 const stepMeta = {
   email: {

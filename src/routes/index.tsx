@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
-import ForgotPassword from "../features/auth/ForgotPassword";
+import ForgotPassword from "../features/auth/forgotPassword/index";
 import AdminBoard from "../features/dashboard/AdminBoard";
 import UserBoard from "../features/dashboard/UserBoard";
 import { PrivateRoute } from "./guards";
