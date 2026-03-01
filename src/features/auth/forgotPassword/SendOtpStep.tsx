@@ -61,7 +61,6 @@ const SendOtpStep: React.FC<Props> = ({ email, setEmail, onNext }) => {
       </Button>
 
       <p className="pt-1 text-center text-sm text-slate-600">
-        Remembered your password?{" "}
         <Link
           to="/login"
           className="focus-ring rounded font-medium text-slate-900 hover:underline"

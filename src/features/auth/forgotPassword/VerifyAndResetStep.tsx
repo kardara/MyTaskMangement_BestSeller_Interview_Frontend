@@ -4,13 +4,15 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import { useToggle } from "../../../hooks/useToggle";
 import { useAsyncAction } from "../../../hooks/useAsyncAction";
-import { resetPassword } from "../../../api/auth";
+import { verifyOtp, resetPassword } from "../../../api/auth";
 
 interface Props {
   email: string;
+  onResend: () => void;
 }
 
-const ResetPasswordStep: React.FC<Props> = ({ email }) => {
+const VerifyAndResetStep: React.FC<Props> = ({ email, onResend }) => {
+  const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, toggleShowPassword] = useToggle();
@@ -23,6 +25,7 @@ const ResetPasswordStep: React.FC<Props> = ({ email }) => {
     await run(async () => {
       if (newPassword !== confirmPassword)
         throw new Error("Passwords do not match.");
+      await verifyOtp(email, otp);
       const msg = await resetPassword(email, newPassword);
       setSuccess(msg || "Password reset successfully!");
       setTimeout(() => navigate("/login"), 1500);
@@ -39,6 +42,25 @@ const ResetPasswordStep: React.FC<Props> = ({ email }) => {
       {success && (
         <div className="text-green-600 text-sm text-center">{success}</div>
       )}
+
+      <div>
+        <label
+          htmlFor="fp-otp"
+          className="mb-2 block text-sm font-medium text-slate-700"
+        >
+          OTP Code
+        </label>
+        <Input
+          id="fp-otp"
+          type="text"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          required
+          maxLength={6}
+          className="focus-ring w-full rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 tracking-widest text-center"
+          placeholder="Enter OTP"
+        />
+      </div>
 
       <div>
         <label
@@ -103,8 +125,19 @@ const ResetPasswordStep: React.FC<Props> = ({ email }) => {
       >
         {loading ? "Resetting..." : "Reset Password"}
       </Button>
+
+      <p className="pt-1 text-center text-sm text-slate-600">
+        Didn&apos;t receive the code?{" "}
+        <button
+          type="button"
+          className="focus-ring rounded font-medium text-slate-900 hover:underline"
+          onClick={onResend}
+        >
+          Resend OTP
+        </button>
+      </p>
     </form>
   );
 };
 
-export default ResetPasswordStep;
+export default VerifyAndResetStep;
