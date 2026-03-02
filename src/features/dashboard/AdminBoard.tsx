@@ -1,4 +1,10 @@
-// ... Admin Trello board placeholder ...
+import DashboardLayout from "../../layouts/DashboardLayout";
+import Board from "./Board";
+
 export default function AdminBoard() {
-  return <div>Admin Dashboard Board</div>;
+  return (
+    <DashboardLayout>
+      <Board />
+    </DashboardLayout>
+  );
 }

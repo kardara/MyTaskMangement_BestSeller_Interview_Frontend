@@ -4,7 +4,8 @@ import Register from "../features/auth/Register";
 import ForgotPassword from "../features/auth/forgotPassword/index";
 import AdminBoard from "../features/dashboard/AdminBoard";
 import UserBoard from "../features/dashboard/UserBoard";
-import { PrivateRoute } from "./guards";
+import UserManagement from "../features/users/UserManagement";
+import { PrivateRoute, AdminRoute } from "./guards";
 
 export default function AppRoutes() {
   return (
@@ -15,9 +16,17 @@ export default function AppRoutes() {
       <Route
         path="/adminDashboard"
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <AdminBoard />
-          </PrivateRoute>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <AdminRoute>
+            <UserManagement />
+          </AdminRoute>
         }
       />
       <Route

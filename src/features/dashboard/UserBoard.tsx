@@ -1,4 +1,10 @@
-// ... User Trello board placeholder ...
+import DashboardLayout from "../../layouts/DashboardLayout";
+import Board from "./Board";
+
 export default function UserBoard() {
-  return <div>User Dashboard Board</div>;
+  return (
+    <DashboardLayout>
+      <Board />
+    </DashboardLayout>
+  );
 }
