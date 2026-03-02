@@ -18,9 +18,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     await run(async () => {
       const res = await login({ email, password });
-      navigate(
-        res.user.role === "ADMIN" ? "/adminDashboard" : "/userDashboard",
-      );
+      navigate(res.role === "ADMIN" ? "/adminDashboard" : "/userDashboard");
     });
   };
 

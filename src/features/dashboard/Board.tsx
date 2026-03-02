@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTasks } from "../../hooks/useTasks";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import KanbanColumn from "../../components/KanbanColumn";
@@ -22,6 +22,18 @@ export default function Board() {
     task?: Task;
     defaultStatus?: TaskStatus;
   } | null>(null);
+
+  // useMemo: recompute filtered task lists only when tasks array changes
+  const tasksByStatus = useMemo(
+    () =>
+      new Map(
+        COLUMNS.map(({ status }) => [
+          status,
+          tasks.filter((t) => t.status === status),
+        ]),
+      ),
+    [tasks],
+  );
 
   const saveColor = (id: number, color: TaskColor) =>
     setColorMap({ ...(colorMap ?? {}), [id]: color });
@@ -56,7 +68,7 @@ export default function Board() {
           key={status}
           title={label}
           status={status}
-          tasks={tasks.filter((t) => t.status === status)}
+          tasks={tasksByStatus.get(status) ?? []}
           colorMap={colorMap ?? {}}
           onDrop={moveTask}
           onAdd={(s) => setModal({ defaultStatus: s })}
