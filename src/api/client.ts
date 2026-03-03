@@ -1,6 +1,5 @@
 import axios from "axios";
 import { BackendError } from "../types/auth";
-import { getToken } from "../utils/token";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -8,9 +7,12 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  try {
+    const raw = localStorage.getItem("token");
+    const token = raw ? (JSON.parse(raw) as string) : null;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  } catch {
+    //
   }
   return config;
 });
