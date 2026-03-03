@@ -1,12 +1,11 @@
 import React from "react";
-import { Task, TaskStatus, TaskColor } from "../types/task";
+import { Task, TaskStatus } from "../types/task";
 import TaskCard from "./TaskCard";
 
 interface Props {
   title: string;
   status: TaskStatus;
   tasks: Task[];
-  colorMap: Record<number, TaskColor>;
   onDrop: (taskId: number, status: TaskStatus) => void;
   onAdd: (status: TaskStatus) => void;
   onEdit: (task: Task) => void;
@@ -17,7 +16,6 @@ export default function KanbanColumn({
   title,
   status,
   tasks,
-  colorMap,
   onDrop,
   onAdd,
   onEdit,
@@ -57,7 +55,6 @@ export default function KanbanColumn({
         <TaskCard
           key={task.id}
           task={task}
-          color={colorMap[task.id]}
           onEdit={onEdit}
           onDelete={onDelete}
         />

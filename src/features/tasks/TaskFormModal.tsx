@@ -2,38 +2,20 @@ import React, { useState } from "react";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { Task, TaskStatus, TaskColor, TaskPayload } from "../../types/task";
+import { Task, TaskStatus, TaskPayload } from "../../types/task";
 
 const STATUSES: TaskStatus[] = ["BACKLOG", "TODO", "DOING", "DONE"];
-const COLORS: TaskColor[] = [
-  "red",
-  "blue",
-  "green",
-  "yellow",
-  "purple",
-  "orange",
-];
-const COLOR_HEX: Record<TaskColor, string> = {
-  red: "#f87171",
-  blue: "#60a5fa",
-  green: "#4ade80",
-  yellow: "#facc15",
-  purple: "#c084fc",
-  orange: "#fb923c",
-};
 
 interface Props {
   task?: Task;
   defaultStatus?: TaskStatus;
-  defaultColor?: TaskColor;
-  onSave: (payload: TaskPayload, color: TaskColor) => Promise<void>;
+  onSave: (payload: TaskPayload) => Promise<void>;
   onClose: () => void;
 }
 
 export default function TaskFormModal({
   task,
   defaultStatus = "BACKLOG",
-  defaultColor,
   onSave,
   onClose,
 }: Props) {
@@ -42,7 +24,6 @@ export default function TaskFormModal({
   const [status, setStatus] = useState<TaskStatus>(
     task?.status ?? defaultStatus,
   );
-  const [color, setColor] = useState<TaskColor>(defaultColor ?? "blue");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -51,10 +32,11 @@ export default function TaskFormModal({
     if (!title.trim()) return setError("Title is required");
     setLoading(true);
     try {
-      await onSave(
-        { title: title.trim(), description: description.trim(), status },
-        color,
-      );
+      await onSave({
+        title: title.trim(),
+        description: description.trim(),
+        status,
+      });
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -105,22 +87,6 @@ export default function TaskFormModal({
               </option>
             ))}
           </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Card color
-          </label>
-          <div className="flex gap-2">
-            {COLORS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setColor(c)}
-                style={{ backgroundColor: COLOR_HEX[c] }}
-                className={`w-6 h-6 rounded-full transition-transform ${color === c ? "ring-2 ring-offset-1 ring-slate-500 scale-110" : ""}`}
-              />
-            ))}
-          </div>
         </div>
         <Button
           type="submit"

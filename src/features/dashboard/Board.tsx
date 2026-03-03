@@ -1,9 +1,8 @@
 import { useState, useMemo } from "react";
 import { useTasks } from "../../hooks/useTasks";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import KanbanColumn from "../../components/KanbanColumn";
 import TaskFormModal from "../tasks/TaskFormModal";
-import { Task, TaskStatus, TaskColor, TaskPayload } from "../../types/task";
+import { Task, TaskStatus, TaskPayload } from "../../types/task";
 
 const COLUMNS: { label: string; status: TaskStatus }[] = [
   { label: "Backlog", status: "BACKLOG" },
@@ -14,10 +13,6 @@ const COLUMNS: { label: string; status: TaskStatus }[] = [
 
 export default function Board() {
   const { tasks, loading, error, add, update, remove, moveTask } = useTasks();
-  const [colorMap, setColorMap] = useLocalStorage<Record<number, TaskColor>>(
-    "taskColors",
-    {},
-  );
   const [modal, setModal] = useState<{
     task?: Task;
     defaultStatus?: TaskStatus;
@@ -35,16 +30,11 @@ export default function Board() {
     [tasks],
   );
 
-  const saveColor = (id: number, color: TaskColor) =>
-    setColorMap({ ...(colorMap ?? {}), [id]: color });
-
-  const handleSave = async (payload: TaskPayload, color: TaskColor) => {
+  const handleSave = async (payload: TaskPayload) => {
     if (modal?.task) {
       await update(modal.task.id, payload);
-      saveColor(modal.task.id, color);
     } else {
-      const created = await add(payload);
-      saveColor(created.id, color);
+      await add(payload);
     }
   };
 
@@ -69,7 +59,6 @@ export default function Board() {
           title={label}
           status={status}
           tasks={tasksByStatus.get(status) ?? []}
-          colorMap={colorMap ?? {}}
           onDrop={moveTask}
           onAdd={(s) => setModal({ defaultStatus: s })}
           onEdit={(task) => setModal({ task })}
@@ -80,9 +69,6 @@ export default function Board() {
         <TaskFormModal
           task={modal.task}
           defaultStatus={modal.defaultStatus}
-          defaultColor={
-            modal.task ? (colorMap ?? {})[modal.task.id] : undefined
-          }
           onSave={handleSave}
           onClose={() => setModal(null)}
         />

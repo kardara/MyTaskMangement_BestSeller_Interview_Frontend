@@ -7,12 +7,10 @@ interface Props {
 }
 
 export default function Modal({ title, onClose, children }: Props) {
-  // useRef: focus the close button on mount for keyboard accessibility
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     closeRef.current?.focus();
-    // Close on Escape key
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
