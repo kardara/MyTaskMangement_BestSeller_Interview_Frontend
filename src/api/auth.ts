@@ -21,9 +21,7 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
 export async function sendOtp(email: string): Promise<string> {
   try {
-    const res = await api.post(
-      `/forgot-password/send-otp?email=${encodeURIComponent(email)}`,
-    );
+    const res = await api.post(`/forgot-password/send-otp?email=${email}`);
     return res.data;
   } catch (error: unknown) {
     throw new Error(parseBackendError(error, "Failed to send OTP."));
@@ -33,7 +31,7 @@ export async function sendOtp(email: string): Promise<string> {
 export async function verifyOtp(email: string, otp: string): Promise<string> {
   try {
     const res = await api.post(
-      `/forgot-password/verify-otp/${otp}?email=${encodeURIComponent(email)}`,
+      `/forgot-password/verify-otp/${otp}?email=${email}`,
     );
     return res.data;
   } catch (error: unknown) {
@@ -47,7 +45,7 @@ export async function resetPassword(
 ): Promise<string> {
   try {
     const res = await api.post(
-      `/forgot-password/reset-password?email=${encodeURIComponent(email)}&newPassword=${encodeURIComponent(newPassword)}`,
+      `/forgot-password/reset-password?email=${email}&newPassword=${newPassword}`,
     );
     return res.data;
   } catch (error: unknown) {

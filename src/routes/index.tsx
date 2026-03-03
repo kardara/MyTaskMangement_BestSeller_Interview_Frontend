@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
-import ForgotPassword from "../features/auth/forgotPassword/index";
+import SendOtp from "../features/auth/SendOtp";
+import VerifyAndResetPassword from "../features/auth/VerifyAndResetPassword";
 import AdminBoard from "../features/dashboard/AdminBoard";
 import UserBoard from "../features/dashboard/UserBoard";
 import UserManagement from "../features/users/UserManagement";
@@ -12,7 +13,8 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/forgot-password" element={<SendOtp />} />
+      <Route path="/reset-password" element={<VerifyAndResetPassword />} />
       <Route
         path="/adminDashboard"
         element={

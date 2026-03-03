@@ -18,7 +18,6 @@ export default function Board() {
     defaultStatus?: TaskStatus;
   } | null>(null);
 
-  // useMemo: recompute filtered task lists only when tasks array changes
   const tasksByStatus = useMemo(
     () =>
       new Map(

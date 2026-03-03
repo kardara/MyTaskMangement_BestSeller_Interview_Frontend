@@ -48,7 +48,7 @@ export function useAuth() {
     login,
     register,
     logout,
-    isAuthenticated: !!token,
+    isAuthenticated: token !== null,
     isAdmin: user?.role === "ADMIN",
   };
 }
