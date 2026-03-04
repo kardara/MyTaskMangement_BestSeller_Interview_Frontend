@@ -1,4 +1,3 @@
-// src/types/auth.ts
 export interface RegisterRequest {
   name: string;
   email: string;
@@ -14,7 +13,7 @@ export interface UserResponse {
   userId: number;
   name: string;
   email: string;
-  role: string; // "USER" | "ADMIN"
+  role: string;
 }
 
 export interface AuthResponse {
